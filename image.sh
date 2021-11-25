@@ -21,7 +21,7 @@ elif [ "$1" = "20no" ]; then
 elif [ "$1" = "office" ]; then
     sudo docker build -f DockerfileOffice -t office:$timestamp .
 elif [ "$1" = "home" ]; then
-    sudo docker build -f Dockerfilehome -t home:$timestamp .    
+    sudo docker build -f Dockerfilehome -t home:$timestamp . --no-cache
 else
     echo "There are no match."
 fi
