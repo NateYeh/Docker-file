@@ -44,9 +44,9 @@ RUN echo 'export LC_TIME=en_US.UTF-8' >> /home/${USER}/.bashrc
 
 RUN /home/${USER}/env/bin/pip install -U pip
 RUN /home/${USER}/env/bin/pip install -U setuptools wheel
-RUN /home/${USER}/env/bin/pip install alive-progress baidu-aip cloudscraper dlib eyed3 fake-useragent ffmpeg-python Flask-HTTPAuth getkey iso-639 iso3166 isort johnnydep jupyter
-RUN /home/${USER}/env/bin/pip install MechanicalSoup OpenCC opencv-python Pillow pkg_resources psutil py3exiv2 PyMySQL pyOpenSSL pyquery python-qbittorrent
-RUN /home/${USER}/env/bin/pip install selenium streamlink twstock wget youtube-dl yt-dlp 
+RUN /home/${USER}/env/bin/pip install alive-progress baidu-aip cloudscraper dlib eyed3 fake-useragent ffmpeg-python Flask-HTTPAuth getkey iso-639 iso3166 isort
+RUN /home/${USER}/env/bin/pip install johnnydep jupyter MechanicalSoup OpenCC opencv-python Pillow pkg_resources psutil
+RUN /home/${USER}/env/bin/pip install py3exiv2 PyMySQL pyOpenSSL pyquery python-qbittorrent selenium streamlink twstock wget youtube-dl yt-dlp
 
 USER root
 
