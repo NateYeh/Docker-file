@@ -56,6 +56,9 @@ RUN echo '#!/bin/bash' > /start.sh \
     && echo 'su '${USER}' -c "screen -dmS jupyter /home/'${USER}'/env/bin/jupyter notebook --ip 0.0.0.0 --no-browser --allow-root"' >> /start.sh \
     && echo 'chmod 777 /dev/dri/card0' >> /start.sh \
     && echo 'chmod 777 /dev/dri/renderD128' >> /start.sh \
+    && echo 'mount -t cifs -o vers=3.0,username="nate",password="G6kSaEaDHcUC4F",uid=1026,gid=100,iocharset=utf8 //192.168.77.140/av /mnt/av' >> /start.sh \
+    && echo 'mount -t cifs -o vers=3.0,username="nate",password="G6kSaEaDHcUC4F",uid=1026,gid=100,iocharset=utf8 //192.168.77.140/bt /mnt/bt' >> /start.sh \
+    && echo 'mount -t cifs -o vers=3.0,username="nate",password="G6kSaEaDHcUC4F",uid=1026,gid=100,iocharset=utf8 //192.168.77.140/music /mnt/music' >> /start.sh \
     && echo '/usr/sbin/sshd -D' >> /start.sh \
     && chmod +x /start.sh
 
