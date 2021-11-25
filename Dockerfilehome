@@ -64,9 +64,9 @@ RUN sed -i -e "s/17/#17/" /etc/crontab
 RUN sed -i -e "s/25/#25/" /etc/crontab
 RUN sed -i -e "s/47/#47/" /etc/crontab
 RUN sed -i -e "s/52/#52/" /etc/crontab
-RUN echo "#30  2  *  *  * "${USER}" cd /mnt/work/python/av && python3 av.py --cmd CheckWeb" >> /etc/crontab
-RUN echo "#30 12  *  *  * "${USER}" cd /mnt/ubuntu/python/av && python3 av.py --cmd rm" >> /etc/crontab
-RUN echo "#10  6  5  *  * "${USER}" cd /mnt/ubuntu/python/photo && python3 tiny.py --cmd Compress" >> /etc/crontab
+RUN echo "#00  2  *  *  * "${USER}" cd /home/"${USER}"/work/python/av && python3 checkBT.py" >> /etc/crontab
+RUN echo "#30 12  *  *  * "${USER}" cd /home/"${USER}"/work/python/av && python3 rmBT.py" >> /etc/crontab
+RUN echo "#10  6  5  *  * "${USER}" cd /home/"${USER}"/work/python/photo && python3 tiny.py --cmd Compress" >> /etc/crontab
 RUN echo " 20  2  *  *  * root updatedb" >> /etc/crontab
 
 RUN locale-gen en_US.UTF-8
