@@ -1,0 +1,90 @@
+FROM ubuntu:20.04
+
+#MAINTAINER Nate
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Change custom NCHC source
+RUN sed -ri 's/http:\/\/archive.ubuntu.com\/ubuntu/http:\/\/free.nchc.org.tw\/ubuntu/g' /etc/apt/sources.list
+
+RUN apt-get update
+RUN apt-get install -y dialog apt-utils
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+
+RUN apt-get upgrade -y
+RUN apt-get install -y openssh-server sudo vim locales tzdata
+RUN apt-get install -y curl ninja-build iputils-ping htop rsync cron cifs-utils
+RUN apt-get install -y net-tools screen pkg-config libcairo2-dev libgirepository1.0-dev
+RUN apt-get install -y git make dh-autoreconf cmake bc astyle libxml2-dev
+RUN apt-get install -y libncurses5-dev libpthread-stubs0-dev libpciaccess-dev libxvmc-dev xutils-dev libsdl2-dev libxcb-shm0-dev libdrm-dev
+RUN apt-get install -y ffmpeg build-essential python-all-dev libexiv2-dev libboost-python-dev
+
+# python
+RUN apt-get install -y python3 python3-venv
+
+RUN mkdir /var/run/sshd
+
+ARG USER=nate
+ARG PASSWORD=G6kSaEaDHcUC4F
+ARG UID=1026
+ARG GID=100
+
+#RUN groupadd --gid ${GID} ${USER}
+RUN useradd -ms /bin/bash -u ${UID} -g ${GID} -G sudo ${USER}
+RUN echo ${USER}':'${PASSWORD} | chpasswd
+
+USER ${USER}
+RUN python3 -m venv /home/${USER}/env
+RUN echo 'source /home/'${USER}'/env/bin/activate' >> /home/${USER}/.bashrc
+RUN echo 'export LC_ALL=en_US.UTF-8' >> /home/${USER}/.bashrc
+RUN echo 'export LC_CTYPE=zh_TW.UTF-8' >> /home/${USER}/.bashrc
+RUN echo 'export LC_MESSAGES=zh_TW.UTF-8' >> /home/${USER}/.bashrc
+RUN echo 'export LC_TIME=en_US.UTF-8' >> /home/${USER}/.bashrc
+#RUN echo 'cd /mnt/work' >> /home/${USER}/.bashrc
+
+RUN /home/${USER}/env/bin/pip install -U pip
+RUN /home/${USER}/env/bin/pip install -U setuptools wheel
+RUN /home/${USER}/env/bin/pip install alive-progress baidu-aip cloudscraper dlib eyed3 fake-useragent ffmpeg-python Flask-HTTPAuth getkey iso-639 iso3166 isort johnnydep jupyter
+RUN /home/${USER}/env/bin/pip install MechanicalSoup OpenCC opencv-python Pillow pkg_resources psutil py3exiv2 PyMySQL pyOpenSSL pyquery python-qbittorrent
+RUN /home/${USER}/env/bin/pip install selenium streamlink twstock wget youtube-dl yt-dlp 
+
+USER root
+
+RUN echo '#!/bin/bash' > /start.sh \
+    && echo 'service cron restart' >> /start.sh \
+    && echo 'cd /home/'${USER}'/python' >> /start.sh \
+    && echo 'su '${USER}' -c "screen -dmS jupyter /home/'${USER}'/env/bin/jupyter notebook --ip 0.0.0.0 --no-browser --allow-root"' >> /start.sh \
+	&& echo 'chmod 777 /dev/dri/card0' >> /start.sh \
+	&& echo 'chmod 777 /dev/dri/renderD128' >> /start.sh \
+    && echo '/usr/sbin/sshd -D' >> /start.sh \
+    && chmod +x /start.sh
+
+RUN sed -i -e "s/PATH=/PATH=\/home\/"${USER}"\/env\/bin:/" /etc/crontab
+RUN sed -i -e "s/17/#17/" /etc/crontab
+RUN sed -i -e "s/25/#25/" /etc/crontab
+RUN sed -i -e "s/47/#47/" /etc/crontab
+RUN sed -i -e "s/52/#52/" /etc/crontab
+RUN echo "#30  2  *  *  * "${USER}" cd /mnt/work/python/av && python3 av.py --cmd CheckWeb" >> /etc/crontab
+RUN echo "#30 12  *  *  * "${USER}" cd /mnt/ubuntu/python/av && python3 av.py --cmd rm" >> /etc/crontab
+RUN echo "#10  6  5  *  * "${USER}" cd /mnt/ubuntu/python/photo && python3 tiny.py --cmd Compress" >> /etc/crontab
+RUN echo " 20  2  *  *  * root updatedb" >> /etc/crontab
+
+RUN locale-gen en_US.UTF-8
+RUN locale-gen zh_TW.UTF-8
+
+RUN TZ=Asia/Taipei \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && rm /etc/timezone \
+    && echo $TZ > /etc/timezone \
+    && chmod 644 /etc/timezone \
+    && dpkg-reconfigure --frontend noninteractive tzdata 
+
+RUN ln -sf /bin/bash /bin/sh
+
+# clean
+RUN apt-get autoremove -y
+
+EXPOSE 22
+
+ENTRYPOINT ["/start.sh"]
+#CMD []
