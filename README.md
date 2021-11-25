@@ -1,2 +1,2 @@
 # Docker-file
-sample dockerfile
+dockerfile範例
