@@ -11,7 +11,7 @@ elif [ "$1" = "20" ]; then
 elif [ "$1" = "office" ]; then
     sudo docker run -d -p 21022:22 --name="office" -h "office" --restart=always --device=/dev/dri:/dev/dri -v /home/nate/sdb/work:/mnt/work office:20210809
 elif [ "$1" = "home" ]; then
-    sudo docker run -d -p 5122:22 -p 5188:8888 --name="home" -h "home" --restart=always --cap-add=ALL --privileged --device=/dev/dri:/dev/dri -v /volume2/docker/home/python:/home/nate/python -v /volume2/public/cache:/mnt/cache home:20211116
+    sudo docker run -d -p 5122:22 -p 5188:8888 --name="home" -h "home" --restart=always --cap-add=ALL --privileged --device=/dev/dri:/dev/dri -v /volume2/public/work:/home/nate/work -v /volume2/public/cache:/mnt/cache home:20211116
 else
     echo "There are no match."
 fi
