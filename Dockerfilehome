@@ -54,8 +54,8 @@ RUN echo '#!/bin/bash' > /start.sh \
     && echo 'service cron restart' >> /start.sh \
     && echo 'cd /home/'${USER}'/work/python' >> /start.sh \
     && echo 'su '${USER}' -c "screen -dmS jupyter /home/'${USER}'/env/bin/jupyter notebook --ip 0.0.0.0 --no-browser --allow-root"' >> /start.sh \
-	&& echo 'chmod 777 /dev/dri/card0' >> /start.sh \
-	&& echo 'chmod 777 /dev/dri/renderD128' >> /start.sh \
+    && echo 'chmod 777 /dev/dri/card0' >> /start.sh \
+    && echo 'chmod 777 /dev/dri/renderD128' >> /start.sh \
     && echo '/usr/sbin/sshd -D' >> /start.sh \
     && chmod +x /start.sh
 
